@@ -22,5 +22,5 @@ Pod::Spec.new do |spec|
   spec.dependency 'MJRefresh'
   spec.dependency 'Hyphenate', '~> 3.5.2'
   spec.dependency 'XXFramework'
-  spec.dependency 'SDWebImage'
+  spec.dependency 'SDWebImage', '~> 1.1.0'
 end
