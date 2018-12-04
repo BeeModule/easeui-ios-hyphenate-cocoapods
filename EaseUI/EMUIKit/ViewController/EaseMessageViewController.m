@@ -66,6 +66,8 @@ typedef enum : NSUInteger {
 @property (nonatomic) BOOL isPlayingAudio;
 @property (nonatomic, strong) NSMutableArray *atTargets;
 
+@property (nonatomic) BOOL isTyping;
+
 @end
 
 @implementation EaseMessageViewController
@@ -155,6 +157,9 @@ typedef enum : NSUInteger {
     self.tableView.estimatedRowHeight = 0;
     self.tableView.estimatedSectionHeaderHeight = 0;
     self.tableView.estimatedSectionFooterHeight = 0;
+    
+    NSUserDefaults *uDefaults = [NSUserDefaults standardUserDefaults];
+    self.isTyping = [uDefaults boolForKey:@"MessageShowTyping"];
 }
 
 /*!
@@ -287,16 +292,32 @@ typedef enum : NSUInteger {
     [self showHint:[NSString stringWithFormat:NSEaseLocalizedString(@"chatroom.leave.hint", @"\'%@\'leave chatroom\'%@\'"), aUsername, aChatroom.chatroomId] yOffset:-frame.size.height + KHintAdjustY];
 }
 
-- (void)didReceiveKickedFromChatroom:(EMChatroom *)aChatroom
-                              reason:(EMChatroomBeKickedReason)aReason
+- (void)didDismissFromChatroom:(EMChatroom *)aChatroom
+                        reason:(EMChatroomBeKickedReason)aReason
 {
     if ([_conversation.conversationId isEqualToString:aChatroom.chatroomId])
     {
         _isKicked = YES;
-        CGRect frame = self.chatToolbar.frame;
-        [self showHint:[NSString stringWithFormat:NSEaseLocalizedString(@"chatroom.remove", @"be removed from chatroom\'%@\'"), aChatroom.chatroomId] yOffset:-frame.size.height + KHintAdjustY];
-        [self.navigationController popToViewController:self animated:NO];
-        [self.navigationController popViewControllerAnimated:YES];
+        __weak typeof(self) weakself = self;
+        if (aReason == EMChatroomBeKickedReasonOffline) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"(ಥ_ಥ)" message:[NSString stringWithFormat:NSEaseLocalizedString(@"chatroom.removeForOffline", nil), aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"chatroom.join", @"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [weakself joinChatroom:weakself.conversation.conversationId];
+            }];
+            [alertController addAction:okAction];
+            
+            [alertController addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"alert.cancel", @"Cancel") style: UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                [weakself.navigationController popToViewController:self animated:NO];
+                [weakself.navigationController popViewControllerAnimated:YES];
+            }]];
+            
+            [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+            CGRect frame = self.chatToolbar.frame;
+            [self showHint:[NSString stringWithFormat:NSEaseLocalizedString(@"chatroom.remove", @"be removed from chatroom\'%@\'"), aChatroom.chatroomId] yOffset:-frame.size.height + KHintAdjustY];
+            [self.navigationController popToViewController:self animated:NO];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 
@@ -939,6 +960,13 @@ typedef enum : NSUInteger {
     }
 }
 
+- (void)_callMessageCellSelected:(id<IMessageModel>)model
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(messageViewController:didSelectCallMessageModel:)]) {
+        [self.delegate messageViewController:self didSelectCallMessageModel:model];
+    }
+}
+
 #pragma mark - pivate data
 
 /*!
@@ -1257,6 +1285,19 @@ typedef enum : NSUInteger {
     }
     
     switch (model.bodyType) {
+        case EMMessageBodyTypeText:
+        {
+            if (model.message.direction == EMMessageDirectionReceive && [model.message.ext count] > 0) {
+                NSString *conferenceId = [model.message.ext objectForKey:@"conferenceId"];
+                if ([conferenceId length] == 0) {
+                    conferenceId = [model.message.ext objectForKey:@"em_conference_id"];
+                }
+                if ([conferenceId length] > 0) {
+                    [self _callMessageCellSelected:model];
+                }
+            }
+        }
+            break;
         case EMMessageBodyTypeImage:
         {
             _scrollToBottomWhenAppear = NO;
@@ -1343,11 +1384,32 @@ typedef enum : NSUInteger {
     [_menuController setMenuItems:nil];
 }
 
+- (void)inputTextViewDidBeginEditing:(EaseTextView *)inputTextView
+{
+    if (self.conversation.type == EMConversationTypeChat && self.isTyping) {
+        NSString *from = [[EMClient sharedClient] currentUsername];
+        
+        EMCmdMessageBody *body = [[EMCmdMessageBody alloc] initWithAction:@"TypingBegin"];
+        body.isDeliverOnlineOnly = YES;
+        EMMessage *msg = [[EMMessage alloc] initWithConversationID:self.conversation.conversationId from:from to:self.conversation.conversationId body:body ext:nil];
+        [[EMClient sharedClient].chatManager sendMessage:msg progress:nil completion:nil];
+    }
+}
+
 - (void)didSendText:(NSString *)text
 {
     if (text && text.length > 0) {
         [self sendTextMessage:text];
         [self.atTargets removeAllObjects];
+    }
+    
+    if (self.conversation.type == EMConversationTypeChat && self.isTyping) {
+        NSString *from = [[EMClient sharedClient] currentUsername];
+        
+        EMCmdMessageBody *body = [[EMCmdMessageBody alloc] initWithAction:@"TypingEnd"];
+        body.isDeliverOnlineOnly = YES;
+        EMMessage *msg = [[EMMessage alloc] initWithConversationID:self.conversation.conversationId from:from to:self.conversation.conversationId body:body ext:nil];
+        [[EMClient sharedClient].chatManager sendMessage:msg progress:nil completion:nil];
     }
 }
 
@@ -1601,7 +1663,7 @@ typedef enum : NSUInteger {
     // Hide the keyboard
     [self.chatToolbar endEditing:YES];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_CALL object:@{@"chatter":self.conversation.conversationId, @"type":[NSNumber numberWithInt:0]}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_MAKE1V1CALL object:@{@"chatter":self.conversation.conversationId, @"type":@(EMCallTypeVoice)}];
 }
 
 - (void)moreViewVideoCallAction:(EaseChatBarMoreView *)moreView
@@ -1609,7 +1671,7 @@ typedef enum : NSUInteger {
     // Hide the keyboard
     [self.chatToolbar endEditing:YES];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_CALL object:@{@"chatter":self.conversation.conversationId, @"type":[NSNumber numberWithInt:1]}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_MAKE1V1CALL object:@{@"chatter":self.conversation.conversationId, @"type":@(EMCallTypeVideo)}];
 }
 
 #pragma mark - EMLocationViewDelegate
@@ -1646,8 +1708,16 @@ typedef enum : NSUInteger {
 {
     for (EMMessage *message in aCmdMessages) {
         if ([self.conversation.conversationId isEqualToString:message.conversationId]) {
+            EMCmdMessageBody *body = (EMCmdMessageBody *)message.body;
+            if ([body.action isEqualToString:@"TypingBegin"]) {
+                self.title = NSEaseLocalizedString(@"message.typing", @"Typing...");
+                continue;
+            } else if ([body.action isEqualToString:@"TypingEnd"]) {
+                self.title = self.conversation.conversationId;
+                continue;
+            }
+            
             [self showHint:NSEaseLocalizedString(@"receiveCmd", @"receive cmd message")];
-            break;
         }
     }
 }
@@ -1925,12 +1995,7 @@ typedef enum : NSUInteger {
                 [weakself.dataSource messageViewController:weakself updateProgress:progress messageModel:nil messageBody:message.body];
             }
         } completion:^(EMMessage *aMessage, EMError *aError) {
-            if (!aError) {
-                [weakself _refreshAfterSentMessage:aMessage];
-            }
-            else {
-                [weakself.tableView reloadData];
-            }
+            [weakself.tableView reloadData];
         }];
     }
 }
