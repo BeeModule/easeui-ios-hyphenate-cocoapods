@@ -17,7 +17,8 @@ Pod::Spec.new do |spec|
   spec.libraries    = 'stdc++'
   spec.resource     = 'EaseUI/resources/EaseUIResource.bundle'
   spec.xcconfig     = {'OTHER_LDFLAGS' => '-ObjC'}
-  spec.dependency 'TZImagePreviewController', '~> 0.2.1'    
-  spec.dependency 'MJRefresh', '~> 3.1.0'
+  spec.dependency 'TZImagePreviewController'
+  spec.dependency 'MBProgressHUD'
+  spec.dependency 'MJRefresh'
   spec.dependency 'Hyphenate', '~> 3.5.2'
 end
