@@ -12,7 +12,7 @@
 
 #import "EaseMessageCell.h"
 
-#import "#import <SDWebImage/UIImageView+WebCache.h>"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "EaseBubbleView+Text.h"
 #import "EaseBubbleView+Image.h"

@@ -13,7 +13,7 @@
 #import "EaseMessageReadManager.h"
 
 //#import "MWPhotoBrowser.h"
-#import <SDWebImage/#import <SDWebImage/UIImageView+WebCache.h>>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "EMCDDeviceManager.h"
 
@@ -88,11 +88,11 @@ static EaseMessageReadManager *detailInstance = nil;
 - (UINavigationController *)photoNavigationController
 {
     if (_photoNavigationController == nil) {
-        _photoNavigationController = [[UINavigationController alloc] initWithRootViewController:self.photoBrowser];
+//        _photoNavigationController = [[UINavigationController alloc] initWithRootViewController:self.photoBrowser];
         _photoNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
     
-    [self.photoBrowser reloadData];
+//    [self.photoBrowser reloadData];
     return _photoNavigationController;
 }
 
