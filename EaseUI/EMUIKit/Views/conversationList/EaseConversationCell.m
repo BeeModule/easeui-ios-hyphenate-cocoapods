@@ -12,7 +12,7 @@
 
 #import "EaseConversationCell.h"
 
-#import "UIImageView+WebCache.h"
+#import "#import <SDWebImage/UIImageView+WebCache.h>"
 
 #if ENABLE_LITE == 1
 #import <HyphenateLite/EMConversation.h>

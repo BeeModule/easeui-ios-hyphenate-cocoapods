@@ -21,4 +21,6 @@ Pod::Spec.new do |spec|
   spec.dependency 'MBProgressHUD'
   spec.dependency 'MJRefresh'
   spec.dependency 'Hyphenate', '~> 3.5.2'
+  spec.dependency 'XXFramework'
+  spec.dependency 'SDWebImage'
 end

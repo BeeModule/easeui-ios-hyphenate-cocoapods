@@ -12,7 +12,7 @@
 
 #import "UIViewController+HUD.h"
 
-#import "MBProgressHUD.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <objc/runtime.h>
 
 static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
@@ -29,9 +29,9 @@ static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
 
 - (void)showHudInView:(UIView *)view hint:(NSString *)hint{
     MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:view];
-    HUD.labelText = hint;
+    HUD.label.text = hint;
     [view addSubview:HUD];
-    [HUD show:YES];
+    [HUD showAnimated:YES];
     [self setHUD:HUD];
 }
 
@@ -42,11 +42,11 @@ static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
     hud.userInteractionEnabled = NO;
     // Configure for text only and offset down
     hud.mode = MBProgressHUDModeText;
-    hud.labelText = hint;
+    hud.label.text = hint;
     hud.margin = 10.f;
-    hud.yOffset = 180;
+    hud.offset = CGPointMake(hud.offset.x, 180);
     hud.removeFromSuperViewOnHide = YES;
-    [hud hide:YES afterDelay:2];
+    [hud hideAnimated:YES afterDelay:2];
 }
 
 - (void)showHint:(NSString *)hint yOffset:(float)yOffset
@@ -56,16 +56,16 @@ static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
     hud.userInteractionEnabled = NO;
     // Configure for text only and offset down
     hud.mode = MBProgressHUDModeText;
-    hud.labelText = hint;
+    hud.label.text = hint;
     hud.margin = 10.f;
-    hud.yOffset = 180;
-    hud.yOffset += yOffset;
+    hud.offset = CGPointMake(hud.offset.x, 180 + yOffset);
     hud.removeFromSuperViewOnHide = YES;
-    [hud hide:YES afterDelay:2];
+    [hud hideAnimated:YES afterDelay:2];
 }
 
 - (void)hideHud{
-    [[self HUD] hide:YES];
+    [[self HUD] hideAnimated:YES];
 }
 
 @end
+

@@ -12,7 +12,7 @@
 
 #import "EaseBaseMessageCell.h"
 
-#import "UIImageView+WebCache.h"
+#import "#import <SDWebImage/UIImageView+WebCache.h>"
 
 @interface EaseBaseMessageCell()
 

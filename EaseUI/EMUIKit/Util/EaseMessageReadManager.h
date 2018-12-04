@@ -17,11 +17,11 @@
 typedef void (^FinishBlock)(BOOL success);
 typedef void (^PlayBlock)(BOOL playing, EaseMessageModel *messageModel);
 
-@class MWPhotoBrowser;
+//@class MWPhotoBrowser;
 @class EMChatFireBubbleView;
 @interface EaseMessageReadManager : NSObject
 
-@property (strong, nonatomic) MWPhotoBrowser *photoBrowser;
+//@property (strong, nonatomic) MWPhotoBrowser *photoBrowser;
 @property (strong, nonatomic) FinishBlock finishBlock;
 
 @property (strong, nonatomic) EaseMessageModel *audioMessageModel;
