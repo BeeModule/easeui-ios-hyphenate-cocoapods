@@ -14,6 +14,7 @@
 
 //#import "MWPhotoBrowser.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <XXFramework/XXFramework-umbrella.h>
 
 #import "EMCDDeviceManager.h"
 
@@ -67,10 +68,10 @@ static EaseMessageReadManager *detailInstance = nil;
     return _photos;
 }
 
-//- (MWPhotoBrowser *)photoBrowser
+//- (TZImagePreviewController *)photoBrowser
 //{
 //    if (_photoBrowser == nil) {
-//        _photoBrowser = [[MWPhotoBrowser alloc] initWithDelegate:self];
+//        _photoBrowser = [[TZImagePreviewController alloc] initWithDelegate:self];
 //        _photoBrowser.displayActionButton = YES;
 //        _photoBrowser.displayNavArrows = YES;
 //        _photoBrowser.displaySelectionButtons = NO;
@@ -121,6 +122,8 @@ static EaseMessageReadManager *detailInstance = nil;
 
 - (void)showBrowserWithImages:(NSArray *)imageArray
 {
+    [[PhotoService shared] showPhoto:imageArray index:0 fromImageView:nil];
+    
 //    if (imageArray && [imageArray count] > 0) {
 //        NSMutableArray *photoArray = [NSMutableArray array];
 //        for (id object in imageArray) {
