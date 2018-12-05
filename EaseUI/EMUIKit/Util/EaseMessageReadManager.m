@@ -11,10 +11,8 @@
  */
 
 #import "EaseMessageReadManager.h"
-
-//#import "MWPhotoBrowser.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <XXFramework/XXFramework-umbrella.h>
+//#import <XXFramework/XXFramework-umbrella.h>
 
 #import "EMCDDeviceManager.h"
 
@@ -67,91 +65,11 @@ static EaseMessageReadManager *detailInstance = nil;
     
     return _photos;
 }
-
-//- (TZImagePreviewController *)photoBrowser
-//{
-//    if (_photoBrowser == nil) {
-//        _photoBrowser = [[TZImagePreviewController alloc] initWithDelegate:self];
-//        _photoBrowser.displayActionButton = YES;
-//        _photoBrowser.displayNavArrows = YES;
-//        _photoBrowser.displaySelectionButtons = NO;
-//        _photoBrowser.alwaysShowControls = NO;
-//        _photoBrowser.wantsFullScreenLayout = YES;
-//        _photoBrowser.zoomPhotosToFill = YES;
-//        _photoBrowser.enableGrid = NO;
-//        _photoBrowser.startOnGrid = NO;
-//        [_photoBrowser setCurrentPhotoIndex:0];
-//    }
-//
-//    return _photoBrowser;
-//}
-
-- (UINavigationController *)photoNavigationController
-{
-    if (_photoNavigationController == nil) {
-//        _photoNavigationController = [[UINavigationController alloc] initWithRootViewController:self.photoBrowser];
-        _photoNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    }
-    
-//    [self.photoBrowser reloadData];
-    return _photoNavigationController;
-}
-
-#pragma mark - MWPhotoBrowserDelegate
-
-//- (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
-//{
-//    return [self.photos count];
-//}
-//
-//- (id <MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
-//{
-//    if (index < self.photos.count)
-//    {
-//        return [self.photos objectAtIndex:index];
-//    }
-//
-//    return nil;
-//}
-
-
-#pragma mark - private
-
-
 #pragma mark - public
 
 - (void)showBrowserWithImages:(NSArray *)imageArray
 {
     [[PhotoService shared] showPhoto:imageArray index:0 fromImageView:nil];
-    
-//    if (imageArray && [imageArray count] > 0) {
-//        NSMutableArray *photoArray = [NSMutableArray array];
-//        for (id object in imageArray) {
-//            MWPhoto *photo;
-//            if ([object isKindOfClass:[UIImage class]]) {
-//                CGFloat imageSize = ((UIImage*)object).size.width * ((UIImage*)object).size.height;
-//                if (imageSize > IMAGE_MAX_SIZE_5k) {
-//                    photo = [MWPhoto photoWithImage:[self scaleImage:object toScale:(IMAGE_MAX_SIZE_5k)/imageSize]];
-//                } else {
-//                    photo = [MWPhoto photoWithImage:object];
-//                }
-//            }
-//            else if ([object isKindOfClass:[NSURL class]])
-//            {
-//                photo = [MWPhoto photoWithURL:object];
-//            }
-//            else if ([object isKindOfClass:[NSString class]])
-//            {
-//
-//            }
-//            [photoArray addObject:photo];
-//        }
-//
-//        self.photos = photoArray;
-//    }
-//
-//    UIViewController *rootController = [self.keyWindow rootViewController];
-//    [rootController presentViewController:self.photoNavigationController animated:YES completion:nil];
 }
 
 - (BOOL)prepareMessageAudioModel:(EaseMessageModel *)messageModel
