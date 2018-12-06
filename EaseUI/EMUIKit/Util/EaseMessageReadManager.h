@@ -16,6 +16,7 @@
 
 typedef void (^FinishBlock)(BOOL success);
 typedef void (^PlayBlock)(BOOL playing, EaseMessageModel *messageModel);
+typedef void (^ShowBrowserWithImagesBlock)(NSArray *photos);
 
 @class EMChatFireBubbleView;
 @interface EaseMessageReadManager : NSObject
@@ -24,9 +25,10 @@ typedef void (^PlayBlock)(BOOL playing, EaseMessageModel *messageModel);
 
 @property (strong, nonatomic) EaseMessageModel *audioMessageModel;
 
-+ (id)defaultManager;
+//需要自己实现照片预览的方式
+@property (strong, nonatomic) ShowBrowserWithImagesBlock showBrowserWithImagesBlock;
 
-@property (nonatomic, copy) void (^showBrowserWithImagesBlock)(NSArray *photos);
++ (id)defaultManager;
 
 /*!
  @method
