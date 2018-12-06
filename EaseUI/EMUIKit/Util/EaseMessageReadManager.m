@@ -69,7 +69,7 @@ static EaseMessageReadManager *detailInstance = nil;
 
 - (void)showBrowserWithImages:(NSArray *)imageArray
 {
-    [[PhotoService shared] showPhoto:imageArray index:0 fromImageView:nil];
+//    [[PhotoService shared] showPhoto:imageArray index:0 fromImageView:nil];
 }
 
 - (BOOL)prepareMessageAudioModel:(EaseMessageModel *)messageModel

@@ -13,8 +13,14 @@
 #ifndef EaseLocalDefine_h
 #define EaseLocalDefine_h
 
+#import "EaseChineseToPinyin.h"
+
 #define iPhoneX_BOTTOM_HEIGHT  ([UIScreen mainScreen].bounds.size.height==812?34:0)
 
-#define NSEaseLocalizedString(key, comment) [[NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:@"EaseUIResource" withExtension:@"bundle"]] localizedStringForKey:(key) value:@"" table:nil]
+#define NSEaseLocalizedString(key, comment) [[NSBundle bundleWithURL:[[NSBundle bundleForClass:[EaseChineseToPinyin class]] URLForResource:@"EaseUIResource.bundle" withExtension:nil]] localizedStringForKey:(key) value:@"" table:nil]
+
+#define ImageBundle [NSBundle bundleWithURL:[[NSBundle bundleForClass:[EaseChineseToPinyin class]] URLForResource:@"EaseUIResource" withExtension:@"bundle"]]
+
+#define ImageWithName(name) [UIImage imageWithContentsOfFile:[ImageBundle pathForResource:[NSString stringWithFormat:@"%@@2x",(name)] ofType:@"png"]]
 
 #endif /* EaseLocalDefine_h */

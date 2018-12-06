@@ -11,6 +11,7 @@
  */
 
 #import "EaseUserModel.h"
+#import "EaseLocalDefine.h"
 
 @implementation EaseUserModel
 
@@ -20,7 +21,7 @@
     if (self) {
         _buddy = buddy;
         _nickname = @"";
-        _avatarImage = [UIImage imageNamed:@"EaseUIResource.bundle/user"];
+        _avatarImage = ImageWithName(@"user");
     }
     
     return self;

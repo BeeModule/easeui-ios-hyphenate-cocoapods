@@ -15,6 +15,7 @@
 #import "EaseEmoji.h"
 #import "EaseFaceView.h"
 #import "EaseEmotionManager.h"
+#import "EaseLocalDefine.h"
 
 @interface UIButton (UIButtonImageWithLable)
 - (void) setImage:(UIImage *)image withTitle:(NSString *)title forState:(UIControlState)stateType;
@@ -110,8 +111,8 @@
         [_imageButton setTitle:nil forState:UIControlStateNormal];
         [_imageButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [_imageButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-        [_imageButton setImage:[UIImage imageNamed:@"EaseUIResource.bundle/faceDelete"] forState:UIControlStateNormal];
-        [_imageButton setImage:[UIImage imageNamed:@"EaseUIResource.bundle/faceDelete_select"] forState:UIControlStateHighlighted];
+        [_imageButton setImage:ImageWithName(@"faceDelete") forState:UIControlStateNormal];
+        [_imageButton setImage:ImageWithName(@"faceDelete_select") forState:UIControlStateHighlighted];
         [_imageButton addTarget:self action:@selector(sendEmotion:) forControlEvents:UIControlEventTouchUpInside];
     }
 }
