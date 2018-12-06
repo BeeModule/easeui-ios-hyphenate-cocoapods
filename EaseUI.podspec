@@ -21,6 +21,4 @@ Pod::Spec.new do |spec|
   spec.dependency 'MJRefresh'
   spec.dependency 'Hyphenate', '~> 3.5.2'
   spec.dependency 'SDWebImage'
-  spec.dependency 'TZImagePickerController'
-  spec.dependency 'TZImagePreviewController'
 end

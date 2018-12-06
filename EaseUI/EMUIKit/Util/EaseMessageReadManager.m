@@ -12,20 +12,14 @@
 
 #import "EaseMessageReadManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import <TZImagePickerController/TZImagePickerController.h>
-#import <TZImagePreviewController/TZImagePreviewController.h>
 
 #import "EMCDDeviceManager.h"
-
-#define IMAGE_MAX_SIZE_5k 5120*2880
 
 static EaseMessageReadManager *detailInstance = nil;
 
 @interface EaseMessageReadManager()
 
-@property (strong, nonatomic) UIWindow *keyWindow;
 @property (strong, nonatomic) UIAlertView *textAlertView;
-@property (strong, nonatomic) TZImagePickerController *pickVC;
 
 @end
 
@@ -43,39 +37,13 @@ static EaseMessageReadManager *detailInstance = nil;
     return detailInstance;
 }
 
-#pragma mark - getter
-- (UIWindow *)keyWindow
-{
-    if(_keyWindow == nil)
-    {
-        _keyWindow = [[UIApplication sharedApplication] keyWindow];
-    }
-    
-    return _keyWindow;
-}
-
-- (TZImagePickerController *)pickVC {
-    if (_pickVC == nil) {
-        _pickVC = [[TZImagePickerController alloc] initWithMaxImagesCount:0 delegate:nil];
-        _pickVC.showSelectedIndex = YES;
-    }
-    return _pickVC;
-}
-
 #pragma mark - public
 
 - (void)showBrowserWithImages:(NSArray *)imageArray
 {
-    TZImagePreviewController *previewVC = [[TZImagePreviewController alloc] initWithPhotos:imageArray currentIndex:0 tzImagePickerVc:_pickVC];
-    [previewVC setSetImageWithURLBlock:^(NSURL *url, UIImageView *imageView, void (^completion)(void)) {
-        [imageView sd_setImageWithURL:url];
-    }];
-    
-    UINavigationController *photoNavigationController = [[UINavigationController alloc] initWithRootViewController:previewVC];
-    photoNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    
-    UIViewController *rootController = [self.keyWindow rootViewController];
-    [rootController presentViewController:photoNavigationController animated:YES completion:nil];
+    if (self.showBrowserWithImagesBlock) {
+        self.showBrowserWithImagesBlock(imageArray);
+    }
 }
 
 - (BOOL)prepareMessageAudioModel:(EaseMessageModel *)messageModel
