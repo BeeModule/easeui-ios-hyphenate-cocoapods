@@ -12,7 +12,8 @@
 
 #import "EaseMessageReadManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-//#import <XXFramework/XXFramework-umbrella.h>
+#import <TZImagePickerController/TZImagePickerController.h>
+#import <TZImagePreviewController/TZImagePreviewController.h>
 
 #import "EMCDDeviceManager.h"
 
@@ -23,11 +24,8 @@ static EaseMessageReadManager *detailInstance = nil;
 @interface EaseMessageReadManager()
 
 @property (strong, nonatomic) UIWindow *keyWindow;
-
-@property (strong, nonatomic) NSMutableArray *photos;
-@property (strong, nonatomic) UINavigationController *photoNavigationController;
-
 @property (strong, nonatomic) UIAlertView *textAlertView;
+@property (strong, nonatomic) TZImagePickerController *pickVC;
 
 @end
 
@@ -46,7 +44,6 @@ static EaseMessageReadManager *detailInstance = nil;
 }
 
 #pragma mark - getter
-
 - (UIWindow *)keyWindow
 {
     if(_keyWindow == nil)
@@ -57,19 +54,28 @@ static EaseMessageReadManager *detailInstance = nil;
     return _keyWindow;
 }
 
-- (NSMutableArray *)photos
-{
-    if (_photos == nil) {
-        _photos = [[NSMutableArray alloc] init];
+- (TZImagePickerController *)pickVC {
+    if (_pickVC == nil) {
+        _pickVC = [[TZImagePickerController alloc] initWithMaxImagesCount:0 delegate:nil];
+        _pickVC.showSelectedIndex = YES;
     }
-    
-    return _photos;
+    return _pickVC;
 }
+
 #pragma mark - public
 
 - (void)showBrowserWithImages:(NSArray *)imageArray
 {
-//    [[PhotoService shared] showPhoto:imageArray index:0 fromImageView:nil];
+    TZImagePreviewController *previewVC = [[TZImagePreviewController alloc] initWithPhotos:imageArray currentIndex:0 tzImagePickerVc:_pickVC];
+    [previewVC setSetImageWithURLBlock:^(NSURL *url, UIImageView *imageView, void (^completion)(void)) {
+        [imageView sd_setImageWithURL:url];
+    }];
+    
+    UINavigationController *photoNavigationController = [[UINavigationController alloc] initWithRootViewController:previewVC];
+    photoNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
+    UIViewController *rootController = [self.keyWindow rootViewController];
+    [rootController presentViewController:photoNavigationController animated:YES completion:nil];
 }
 
 - (BOOL)prepareMessageAudioModel:(EaseMessageModel *)messageModel

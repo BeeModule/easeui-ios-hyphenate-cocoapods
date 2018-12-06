@@ -30,7 +30,7 @@ typedef void (^PlayBlock)(BOOL playing, EaseMessageModel *messageModel);
  @method
  @brief 显示图片消息原图
  @discussion
- @param imageArray   原图数组，需要传入UIImage对象
+ @param imageArray   原图数组，支持PHAsset、UIImage、NSURL对象
  @return
  */
 - (void)showBrowserWithImages:(NSArray *)imageArray;
