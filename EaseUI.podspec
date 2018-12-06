@@ -20,6 +20,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'MBProgressHUD', '~> 1.1.0'
   spec.dependency 'MJRefresh'
   spec.dependency 'Hyphenate', '~> 3.5.2'
-  spec.dependency 'XXFramework'
   spec.dependency 'SDWebImage'
+  spec.dependency 'TZImagePickerController'
+  spec.dependency 'TZImagePreviewController'
 end
